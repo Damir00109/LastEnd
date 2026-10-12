@@ -1,0 +1,5 @@
+{
+  "item.laststand.bandage": "Bandage",
+  "gui.laststand.reviving": "Reviving %1$s — %2$s s",
+  "gui.laststand.revive_you": "%1$s is reviving you — %2$s s"
+}
