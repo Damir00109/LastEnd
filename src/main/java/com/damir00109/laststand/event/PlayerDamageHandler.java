@@ -4,7 +4,10 @@ import com.damir00109.laststand.config.LastStandConfig;
 import com.damir00109.laststand.downed.DownedManager;
 import com.damir00109.laststand.player.PlayerDownedData;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -50,8 +53,23 @@ public final class PlayerDamageHandler {
         float incoming = event.getAmount();
 
         if (health <= incoming) {
+            if (canUseTotem(player, source)) {
+                return;
+            }
             event.setCanceled(true);
             DownedManager.enterDowned(player, source);
         }
+    }
+
+    private static boolean canUseTotem(ServerPlayer player, DamageSource source) {
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            return false;
+        }
+        for (InteractionHand hand : InteractionHand.values()) {
+            if (player.getItemInHand(hand).is(Items.TOTEM_OF_UNDYING)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
